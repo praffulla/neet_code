@@ -1,0 +1,72 @@
+Intuition
+Intution is to solve using hashmap and then sorting hashmap which give O(nlog(n)). Then heap which gives O(k.log(n)).
+
+The idea is that it does not matter how big your array elements are,
+the most repeating element can repeat n times, where n is number of
+array element. So it means, if we have some sort of bucket whose
+size is equal to number of elements in that array then we can create that bucket such the row is number of times the elements repeat and columns is
+those element. For example, [1,1,1,4,4,4,2]
+
+Now bucket will look like that
+
+[0] -> //empty: no element repeat 0 times.
+[1] -> 2 //element 2 repeat 1 time
+[2] -> //empty
+[3] -> [1, 4]
+[4] -> //empty
+[5] -> //empty
+[6] -> //empty
+[7] -> //empty
+
+Now iterate over bucket from end and take k elements as answer.
+
+Approach
+Described above, for bucket, take vector<vector>
+
+Complexity
+Time complexity:
+O(n)
+
+Space complexity:
+O(n)
+
+Code
+class Solution {
+public:
+    vector<int> topKFrequent(vector<int>& nums, int k) {
+
+        unordered_map<int, int> umap;
+        for(int i = 0; i < nums.size(); i++) {
+            if(umap.find(nums[i]) == umap.end()) {
+                umap[nums[i]] = 1;
+            }else {
+                umap[nums[i]]++;
+            }
+        }
+
+        vector<vector<int>> arr(nums.size()+1);
+
+        for(auto it = umap.begin(); it != umap.end(); it++) {
+            //cout << it->first << " " << it->second << "\n";
+            arr[it->second].push_back(it->first);
+        }
+
+       
+
+        vector<int> ans;
+        int count = k;
+        for(int i = nums.size(); i > 0; i--) {
+            if(arr[i].size() != 0) {
+                for(int z = 0; z < arr[i].size(); z++) {
+                    ans.push_back(arr[i][z]);
+                    count--;
+                    if(count == 0)
+                        return ans;
+                }
+            }
+        }
+
+        return ans;
+    }
+
+};
